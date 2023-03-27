@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.min.css">
+    <script src="https://unpkg.com/uhtml@3.0.1/es.js"></script>
+</head>
+
+<body>
+    <sm-notifications id="notification_drawer"></sm-notifications>
+    <div id="loading">
+        <sm-spinner></sm-spinner>
+        <h4>Loading</h4>
+    </div>
+    <article>
+        <header class="flex space-between">
+            <h1 class="flex align-items-center" style="font-size: 1rem;">
+                <svg class="icon" style="margin-right:0.3rem" viewBox="0 0 96 108" xml:space="preserve">
+                    <path d="M90.2,102.5c-2.4-8.2-9.9-14.5-27.4-23.1c-7.1-3.5-11.8-6.2-14-8.3c-1.7-1.6-3.5-4-4.2-5.5c-0.7-1.7-0.7-5.5,0-7.5
+                            c1.3-3.6,2.6-5.2,12.9-15.1c6.2-5.9,9.3-10.3,11.1-15.5c0.7-2.1,0.8-7.6,0.2-9.4C66.5,12,61.7,6.7,53.7,1.6c-3-1.9-4.3-2.1-4.3-0.8
+                            c0,0.3-0.5,1.4-1,2.4l-1,1.8l-2.8-1.9c-1.5-1.1-3.4-2.2-4.1-2.6c-1.3-0.7-2.4-0.6-2.4,0.2c0,0.3-1.4,3.4-2,4.4
+                            c0,0.1-0.4-0.1-0.9-0.4c-6.1-4.4-8.7-5.5-8.7-3.9c0,0.7-1.8,4.2-4,7.9C16,19.5,9.4,24.9,2.6,24.9c-3,0-2.9-0.1-2,3.4
+                            c0.7,2.8,1.1,3.1,3.6,2.3c2.3-0.7,3.9-1.5,5.8-2.9c0.8-0.6,1.5-0.9,1.6-0.9c0.1,0.1,0.5,1,0.7,2.1s0.7,2,0.9,2.1
+                            c0.8,0.3,5.1-1.3,7.5-2.9l2.3-1.5l0.5,1.8c0.6,2.4,1,2.7,3.3,2.1c3.9-1,7.7-3.7,11.5-8.2l2-2.4l-0.2,2.1c-0.6,5.4-4.3,11.4-11.3,18
+                            c-1.8,1.7-4.7,4.5-6.5,6.2c-10.7,10.2-10,18.6,2,26.5c2.7,1.8,10.3,5.8,15.3,8c0.9,0.4,3.3,1.7,5.3,2.9c11,6.5,16.4,13.1,16.4,19.7
+                            c0,1.3,0.1,2.4,0.2,2.6l0,0c0.3,0.3,0.1,0.3,3-0.5c1.4-0.4,2.6-0.9,2.8-1.1c0.4-0.6-0.6-3.7-1.8-6.1c-1.3-2.5-5.6-7-8.9-9.4
+                            c-3.8-2.8-9.3-5.9-17-9.7c-8.5-4.2-11.8-6.2-14.7-9.1c-2.6-2.6-3.9-5.3-3.9-8.2c0-4.6,2.3-8.6,8.3-14.1c9.4-8.7,13-13,15.5-18.8
+                            c1.3-3,1.4-3.4,1.4-6.7c0-3.1-0.1-3.8-1.1-6l-1.1-2.4l1-1.6c0.5-0.9,1.2-2.1,1.5-2.6l0.5-1l1.5,2.1c1.8,2.6,3.2,6.8,3.2,9.3
+                            c0,1.7-0.6,4.7-1.4,6.4c-0.2,0.4-0.4,1-0.5,1.3c-0.1,0.3-1.1,2-2.2,3.7c-2,3-5.2,6.4-13.4,14.2c-5.7,5.4-7.6,8.6-7.8,13.1
+                            c-0.2,3.7,0.7,5.9,3.7,9.2c3.2,3.4,6.9,5.8,17.4,11c12.1,6,17.3,9.6,21.3,14.5c2.5,3.2,3.7,5.8,3.9,9.3c0.1,1.6,0.3,3,0.5,3
+                            c0.1,0.1,0.8,0,1.4-0.2s1.9-0.5,2.7-0.7l1.5-0.4l-0.2-1.5c-0.7-5.1-5.4-10.8-13.1-16c-4.4-2.9-5.8-3.7-17.3-9.4
+                            c-5.7-2.8-9.2-5.1-11.8-7.6c-4.3-4.2-5.1-8.8-2.7-13.9c1.4-2.8,2.7-4.4,12.5-13.8c8-7.7,11.4-13.7,11.4-20.1c0-5.1-2.3-9.9-6.9-14.3
+                            c-1.1-1-2-2-2.1-2.2c-0.2-0.4,1.5-3.9,1.9-3.9c1.2,0,7.8,6.3,9.7,9.2c2,3.3,2.5,5,2.5,8.9c0,3.9-0.6,5.9-2.9,9.8
+                            c-2.4,4.1-4.2,6-14.2,15.5c-3.4,3.2-5.7,6.1-6.9,8.7c-0.9,2-1.1,2.7-1.1,5.1c0,2.3,0.2,3.2,1,4.9c1.9,4,7.4,8.5,15.4,12.4
+                            c12.5,6.1,15.1,7.6,19.4,10.7c7.2,5.3,10.6,10.5,10.6,16c0,1.3,0.1,2.4,0.3,2.5c0.4,0.3,4.8-0.8,5.5-1.3
+                            C90.7,104.4,90.7,104.3,90.2,102.5z M20.3,23.3L20.3,23.3c-2,1-3.3,1.4-4.8,1.5L13.3,25l2.3-2.8c3.7-4.5,6.4-8.9,10-16
+                            c0.9-1.8,1.8-3.5,2-3.6c0.4-0.4,2.6,1.1,5.1,3.4l2.1,1.9l-1.9,2.8C28.2,17.5,24.5,21.2,20.3,23.3z M39.3,17.4
+                            c-1.2,1.7-6.5,5.7-8.6,6.5v0c-1.1,0.4-2.8,0.8-3.9,0.9L24.9,25l2.1-2.6c2.5-3.1,5.1-7,7-10.4c0.7-1.4,1.4-2.5,1.5-2.6
+                            c0.3-0.4,1.7,1.4,3,4.1l1.5,3L39.3,17.4z M44.6,10c-0.7,1.2-1.4,2.1-1.5,2.1c-0.1,0-1.5-1.4-3-3l-2.8-3l0.6-1.5
+                            c1.1-2.6,1.3-2.7,3.4-1c1.9,1.5,4.5,3.8,4.5,4.1C45.8,7.8,45.3,8.9,44.6,10z"></path>
+                </svg>
+                RanchiMall
+            </h1>
+            <theme-toggle></theme-toggle>
+        </header>
+        <section id="kyc_section" class="grid gap-1-5">
+            <div class="flex align-center space-between gap-1">
+                <h2>
+                    KYC Management
+                </h2>
+                <sm-chips id="kyc_type">
+                    <sm-chip value="approve" selected>Approve</sm-chip>
+                    <sm-chip value="revoke">Revoke</sm-chip>
+                </sm-chips>
+            </div>
+            <sm-form>
+                <div class="grid gap-0-5">
+                    <h4>Aggregator credentials</h4>
+                    <sm-input id="aggregator_address" placeholder="FLO/BTC address" error-text="Invalid address"
+                        required animate></sm-input>
+                    <p id="aggregator_balance" class="hidden margin-bottom-0-5"></p>
+                    <sm-input id="aggregator_private_key" placeholder="Private key" error-text="Invalid private key"
+                        type="password" required animate></sm-input>
+                </div>
+                <div class="grid gap-0-5">
+                    <h4 id="address_manage_title">KYCs to be approved</h4>
+                    <p class="margin-bottom-1">
+                        Enter the addresses of the KYCs you want to approve or revoke. You can add multiple addresses by
+                        clicking the "Add address" button.
+                    </p>
+                    <ul id="kyc_addresses_container" class="grid gap-0-3"></ul>
+                    <button id="add_address" class="button margin-right-auto" onclick="addAddressInput()">Add
+                        address</button>
+                </div>
+                <div class="multi-state-button">
+                    <button id="submit_kyc" class="button button--primary" onclick="submitAddresses()"
+                        type="submit">Approve</button>
+                </div>
+            </sm-form>
+        </section>
+    </article>
+    <template id="key_address_template">
+        <li class="address-input flex align-center gap-0-5">
+            <sm-input class="kyc-address" placeholder="FLO/BTC address" error-text="Invalid address" required
+                animate></sm-input>
+            <button class="remove-address button--small" onclick="removeAddressInput(this)">
+                <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24"
+                    width="24px" fill="#000000">
+                    <path d="M0 0h24v24H0V0z" fill="none"></path>
+                    <path
+                        d="M7 11v2h10v-2H7zm5-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z">
+                    </path>
+                </svg>
+                Remove
+            </button>
+        </li>
+    </template>
+    <script src="scripts/floGlobals.js"></script>
+    <script src="scripts/components.min.js"></script>
+    <script src="scripts/lib.js"></script>
+    <script src="scripts/floCrypto.js"></script>
+    <script src="scripts/floBlockchainAPI.js"></script>
+    <script src="scripts/btcOperator.js"></script>
+    <script src="scripts/chainkyc.js"></script>
+    <script>
+        const { html, render: renderElem } = uhtml;
+        //Function for displaying toast notifications. pass in error for mode param if you want to show an error.
+        function notify(message, mode, options = {}) {
+            let icon
+            switch (mode) {
+                case 'success':
+                    icon = `<svg class="icon icon--success" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"/></svg>`
+                    break;
+                case 'error':
+                    icon = `<svg class="icon icon--error" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-1-7v2h2v-2h-2zm0-8v6h2V7h-2z"/></svg>`
+                    options.pinned = true
+                    break;
+            }
+            if (mode === 'error') {
+                console.error(message)
+            }
+            return getRef("notification_drawer").push(message, { icon, ...options });
+        }
+        function buttonLoader(id, show) {
+            const button = typeof id === 'string' ? getRef(id) : id;
+            button.disabled = show;
+            const animOptions = {
+                duration: 200,
+                fill: 'forwards',
+                easing: 'ease'
+            }
+            if (show) {
+                button.animate([
+                    {
+                        clipPath: 'circle(100%)',
+                    },
+                    {
+                        clipPath: 'circle(0)',
+                    },
+                ], animOptions).onfinish = e => {
+                    e.target.commitStyles()
+                    e.target.cancel()
+                }
+                button.parentNode.append(document.createElement('sm-spinner'))
+            } else {
+                button.style = ''
+                const potentialTarget = button.parentNode.querySelector('sm-spinner')
+                if (potentialTarget) potentialTarget.remove();
+            }
+        }
+    </script>
+    <script>
+        router.addRoute('', state => {
+            console.log(state)
+        })
+        getRef('kyc_type').addEventListener('change', e => {
+            if (e.target.value === 'approve') {
+                getRef('address_manage_title').textContent = 'KYCs to be approved'
+                getRef('submit_kyc').textContent = 'Approve'
+            } else {
+                getRef('address_manage_title').textContent = 'KYCs to be revoked'
+                getRef('submit_kyc').textContent = 'Revoke'
+            }
+        })
+        getRef('aggregator_address').addEventListener('input', e => {
+            checkBalance(floCrypto.toFloID(e.target.value.trim()))
+        })
+        function checkBalance(address) {
+            if (!address)
+                address = floCrypto.toFloID(getRef('aggregator_address').value.trim())
+            if (getRef('aggregator_address').isValid) {
+                floBlockchainAPI.getBalance(address).then(balance => {
+                    if (balance < 0.01) {
+                        renderElem(getRef('aggregator_balance'), html`Balance: ${balance}FLO. You don't have enough FLO.`);
+                        getRef('aggregator_balance').classList.add('error')
+                    } else {
+                        renderElem(getRef('aggregator_balance'), html`Balance: ${balance} FLO`);
+                        getRef('aggregator_balance').classList.remove('error')
+                    }
+                    getRef('aggregator_balance').classList.remove('hidden')
+                }).catch(err => {
+                    console.error(err)
+                    notify('Error fetching balance', 'error')
+                    getRef('aggregator_balance').classList.add('hidden')
+                })
+            } else {
+                getRef('aggregator_balance').classList.add('hidden')
+            }
+        }
+        function addAddressInput() {
+            const addressInput = getRef('key_address_template').content.cloneNode(true)
+            if (!getRef('kyc_addresses_container').firstElementChild) {
+                addressInput.querySelector('.remove-address').remove()
+            }
+            getRef('kyc_addresses_container').appendChild(addressInput)
+        }
+        function removeAddressInput(button) {
+            button.closest('.address-input').remove()
+        }
+        const addressInputObserver = new MutationObserver(mutations => {
+            mutations.forEach(mutation => {
+                if (mutation.type === 'childList') {
+                    if (mutation.addedNodes.length > 0) {
+                        mutation.target.lastElementChild.querySelector('sm-input').customValidation = floCrypto.validateAddr
+                        if (mutation.target.children.length > 1) {
+                            const removeButton = mutation.target.firstElementChild.querySelector('.remove-address')
+                            if (!removeButton) {
+                                const newRemoveButton = html.node`
+                                    <button class="remove-address button--small" onclick="removeAddressInput(this)">
+                                        <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"> <path d="M0 0h24v24H0V0z" fill="none"></path> <path d="M7 11v2h10v-2H7zm5-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path> </svg>
+                                        Remove
+                                    </button>
+                                `
+                                mutation.target.firstElementChild.appendChild(newRemoveButton)
+                            }
+                        }
+                    } else if (mutation.removedNodes.length > 0 && mutation.target.children.length === 1) {
+                        const removeButton = mutation.target.firstElementChild.querySelector('.remove-address')
+                        if (removeButton) {
+                            removeButton.remove()
+                        }
+                    }
+                }
+            })
+        })
+        addressInputObserver.observe(getRef('kyc_addresses_container'), {
+            childList: true
+        })
+        function processAddresses() {
+            const addressInputs = document.querySelectorAll('.kyc-address')
+            const addresses = new Set()
+            addressInputs.forEach(input => {
+                const address = input.value.trim()
+                if (address !== '') {
+                    let equivalentBtcAddress = address
+                    if (floCrypto.validateFloID(address))
+                        equivalentBtcAddress = btcOperator.convert.legacy2bech(address)
+                    addresses.add(equivalentBtcAddress)
+                }
+            })
+            return [...addresses]
+        }
+        function submitAddresses() {
+            const aggregatorAddress = getRef('aggregator_address').value.trim()
+            const aggregatorPrivateKey = getRef('aggregator_private_key').value.trim()
+            if (!floGlobals.approvedKycAggregators.hasOwnProperty(aggregatorAddress)) {
+                notify('KYC aggregator address is not approved', 'error')
+                return
+            }
+            const addresses = processAddresses()
+            if (addresses.length === 0) {
+                notify('No addresses to process', 'error')
+                return
+            }
+            const kycType = getRef('kyc_type').value
+            const floData = `KYC|${kycType === 'approve' ? 'APPROVE_KYC' : 'REVOKE_KYC'}|${addresses.join(',')}`
+            if (floData.length > 1040) {
+                notify('Too many addresses. Try removing one and resubmitting.', 'error')
+                return
+            }
+            console.log(floData)
+            buttonLoader(getRef('submit_kyc'), true)
+            floBlockchainAPI.writeData(aggregatorAddress, floData, aggregatorPrivateKey, aggregatorAddress).then(txId => {
+                notify(`${kycType === 'approve' ? 'Approval' : 'Revoke'} request submitted. TXID: ${txId}`, 'success')
+                getRef('kyc_addresses_container').innerHTML = '';
+                addAddressInput()
+            }).catch(e => {
+                notify(e, 'error')
+            }).finally(() => {
+                buttonLoader(getRef('submit_kyc'), false)
+                setTimeout(() => {
+                    checkBalance()
+                }, 1000)
+            })
+        }
+        window.onload = async () => {
+            try {
+                await getApprovedAggregators()
+                router.routeTo(window.location.hash)
+                getRef('aggregator_address').customValidation = floCrypto.validateAddr
+                getRef('aggregator_private_key').customValidation = floCrypto.getPubKeyHex
+                addAddressInput()
+            } catch (e) {
+                notify(e, 'error')
+            }
+        }
+    </script>
+</body>
+
+</html>
