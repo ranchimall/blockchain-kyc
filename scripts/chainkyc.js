@@ -87,7 +87,7 @@ floGlobals.approvedKycAggregators = {};
 function getApprovedAggregators() {
     return new Promise((resolve, reject) => {
         floBlockchainAPI.readAllTxs(floGlobals.masterAddress).then(txs => {
-            txs.filter(tx => tx.vin[0].addr === floGlobals.masterAddress && tx.floData.startsWith('KYC'))
+            txs.filter(tx => floCrypto.isSameAddr(tx.vin[0].addr, floGlobals.masterAddress) && tx.floData.startsWith('KYC'))
                 .reverse()
                 .forEach(tx => {
                     const { floData, time } = tx;
@@ -95,7 +95,7 @@ function getApprovedAggregators() {
                     switch (operationType) {
                         case 'APPROVE_AGGREGATOR':
                             operationData.split(',').forEach(aggregator => {
-                                floGlobals.approvedKycAggregators[aggregator] = {
+                                floGlobals.approvedKycAggregators[floCrypto.toFloID(aggregator)] = {
                                     validFrom: time * 1000,
                                     validTo: validity || Date.now() + 10000000
                                 };
@@ -103,7 +103,7 @@ function getApprovedAggregators() {
                             break;
                         case 'REVOKE_AGGREGATOR':
                             operationData.split(',').forEach(aggregator => {
-                                floGlobals.approvedKycAggregators[aggregator].validTo = time * 1000;
+                                floGlobals.approvedKycAggregators[floCrypto.toFloID(aggregator)].validTo = time * 1000;
                             });
                             break;
                         default:
