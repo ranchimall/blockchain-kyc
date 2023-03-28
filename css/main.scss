@@ -384,7 +384,7 @@ header {
 }
 #kyc_section,
 #verification_section {
-  width: min(100%, 34rem);
+  width: min(100%, 40rem);
   padding: max(1rem, 2vw);
   margin: 0 auto;
   border-radius: 0.5rem;
@@ -424,6 +424,10 @@ header {
   font-size: 0.9rem;
   color: rgba(var(--text-color), 0.8);
   gap: 0.3rem 1rem;
+  span:first-of-type {
+    font-weight: 500;
+    min-width: 5rem;
+  }
 }
 .error {
   color: var(--danger-color);
