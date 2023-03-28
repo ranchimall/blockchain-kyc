@@ -60,14 +60,12 @@
                     <sm-chip value="revoke">Revoke</sm-chip>
                 </sm-chips>
             </div>
-            <sm-form>
+            <sm-form id="kyc_form">
                 <div class="grid gap-0-5">
                     <h4>Aggregator credentials</h4>
-                    <sm-input id="aggregator_address" placeholder="FLO/BTC address" error-text="Invalid address"
-                        required animate></sm-input>
-                    <p id="aggregator_balance" class="hidden margin-bottom-0-5"></p>
                     <sm-input id="aggregator_private_key" placeholder="Private key" error-text="Invalid private key"
                         type="password" required animate></sm-input>
+                    <p id="aggregator_balance" class="hidden"></p>
                 </div>
                 <div class="grid gap-0-5">
                     <h4 id="address_manage_title">KYCs to be approved</h4>
@@ -169,13 +167,13 @@
                 getRef('submit_kyc').textContent = 'Revoke'
             }
         })
-        getRef('aggregator_address').addEventListener('input', e => {
-            checkBalance(floCrypto.toFloID(e.target.value.trim()))
+        getRef('aggregator_private_key').addEventListener('input', e => {
+            checkBalance(floCrypto.getAddress(e.target.value.trim()))
         })
         function checkBalance(address) {
             if (!address)
-                address = floCrypto.toFloID(getRef('aggregator_address').value.trim())
-            if (getRef('aggregator_address').isValid) {
+                address = floCrypto.getAddress(getRef('aggregator_private_key').value.trim())
+            if (getRef('aggregator_private_key').isValid) {
                 floBlockchainAPI.getBalance(address).then(balance => {
                     if (balance < 0.01) {
                         renderElem(getRef('aggregator_balance'), html`Balance: ${balance}FLO. You don't have enough FLO.`);
@@ -248,8 +246,8 @@
             return [...addresses]
         }
         function submitAddresses() {
-            const aggregatorAddress = getRef('aggregator_address').value.trim()
             const aggregatorPrivateKey = getRef('aggregator_private_key').value.trim()
+            const aggregatorAddress = floCrypto.getAddress(aggregatorPrivateKey)
             if (!floGlobals.approvedKycAggregators.hasOwnProperty(aggregatorAddress)) {
                 notify('KYC aggregator address is not approved', 'error')
                 return
@@ -265,11 +263,11 @@
                 notify('Too many addresses. Try removing one and resubmitting.', 'error')
                 return
             }
-            console.log(floData)
             buttonLoader(getRef('submit_kyc'), true)
             floBlockchainAPI.writeData(aggregatorAddress, floData, aggregatorPrivateKey, aggregatorAddress).then(txId => {
                 notify(`${kycType === 'approve' ? 'Approval' : 'Revoke'} request submitted. TXID: ${txId}`, 'success')
                 getRef('kyc_addresses_container').innerHTML = '';
+                getRef('kyc_form').reset()
                 addAddressInput()
             }).catch(e => {
                 notify(e, 'error')
@@ -284,7 +282,6 @@
             try {
                 await getApprovedAggregators()
                 router.routeTo(window.location.hash)
-                getRef('aggregator_address').customValidation = floCrypto.validateAddr
                 getRef('aggregator_private_key').customValidation = floCrypto.getPubKeyHex
                 addAddressInput()
             } catch (e) {
