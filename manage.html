@@ -15,6 +15,14 @@
 
 <body>
     <sm-notifications id="notification_drawer"></sm-notifications>
+    <sm-popup id="confirmation_popup">
+        <h4 id="confirm_title"></h4>
+        <p id="confirm_message"></p>
+        <div class="flex align-center gap-0-5 margin-left-auto">
+            <button class="button cancel-button">Cancel</button>
+            <button class="button button--primary confirm-button">OK</button>
+        </div>
+    </sm-popup>
     <div id="loading">
         <sm-spinner></sm-spinner>
         <h4>Loading</h4>
@@ -60,28 +68,65 @@
                     <sm-chip value="revoke">Revoke</sm-chip>
                 </sm-chips>
             </div>
-            <sm-form id="kyc_form">
-                <div class="grid gap-0-5">
-                    <h4>Aggregator credentials</h4>
-                    <sm-input id="aggregator_private_key" placeholder="Private key" error-text="Invalid private key"
-                        type="password" required animate></sm-input>
-                    <p id="aggregator_balance" class="hidden"></p>
+            <div class="grid gap-0-5">
+                <h4>Aggregator credentials</h4>
+                <sm-input id="aggregator_private_key" placeholder="Private key" error-text="Invalid private key"
+                    type="password" required animate></sm-input>
+                <p id="aggregator_balance" class="hidden"></p>
+            </div>
+            <div id="kyc_mode_wrapper">
+                <sm-form>
+                    <div class="grid gap-0-5">
+                        <h4>KYCs to be approved</h4>
+                        <p class="margin-bottom-1">
+                            Enter the addresses of the KYCs you want to approve. You can add multiple addresses by
+                            clicking the "Add address" button.
+                        </p>
+                        <ul id="kyc_addresses_container" class="grid gap-0-3"></ul>
+                        <button id="add_address" class="button margin-right-auto" onclick="addAddressInput()">Add
+                            address</button>
+                    </div>
+                    <div class="multi-state-button">
+                        <button id="submit_kyc" class="button button--primary" onclick="approveAddresses()"
+                            type="submit" disabled>Approve</button>
+                    </div>
+                </sm-form>
+                <div class="grid gap-1 hidden">
+                    <div class="grid gap-0-5">
+                        <h4>Approved KYC addresses</h4>
+                        <p>
+                            To revoke a KYC, select one or multiple KYCs and click on the 'Revoke selected' button.
+                        </p>
+                    </div>
+                    <div class="grid gap-0-5"
+                        style="position: sticky; top: 0; z-index: 2; background-color: rgba(var(--foreground-color),1);">
+                        <sm-input id="search_approved" type="search" placeholder="Search address">
+                            <svg class="icon" slot="icon" xmlns="http://www.w3.org/2000/svg" height="24px"
+                                viewBox="0 0 24 24" width="24px" fill="#000000">
+                                <path d="M0 0h24v24H0V0z" fill="none" />
+                                <path
+                                    d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                            </svg>
+                        </sm-input>
+                        <div class="flex gap-0-5 align-center hidden">
+                            <button class="button icon-only" title="Clear selection" onclick="clearSelection()">
+                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24"
+                                    width="24px" fill="#000000">
+                                    <path d="M0 0h24v24H0V0z" fill="none" />
+                                    <path
+                                        d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+                                </svg>
+                            </button>
+                            <div id="selected_addresses"></div>
+                            <div class="multi-state-button">
+                                <button id="revoke_kyc_button" class="button button--primary margin-left-auto"
+                                    onclick="revokeAddresses()">Revoke selected</button>
+                            </div>
+                        </div>
+                    </div>
+                    <ul id="approved_kyc_addresses" class="grid gap-0-3"></ul>
                 </div>
-                <div class="grid gap-0-5">
-                    <h4 id="address_manage_title">KYCs to be approved</h4>
-                    <p class="margin-bottom-1">
-                        Enter the addresses of the KYCs you want to approve or revoke. You can add multiple addresses by
-                        clicking the "Add address" button.
-                    </p>
-                    <ul id="kyc_addresses_container" class="grid gap-0-3"></ul>
-                    <button id="add_address" class="button margin-right-auto" onclick="addAddressInput()">Add
-                        address</button>
-                </div>
-                <div class="multi-state-button">
-                    <button id="submit_kyc" class="button button--primary" onclick="submitAddresses()"
-                        type="submit">Approve</button>
-                </div>
-            </sm-form>
+            </div>
         </section>
     </article>
     <template id="key_address_template">
@@ -153,20 +198,110 @@
                 if (potentialTarget) potentialTarget.remove();
             }
         }
+        function showChildElement(id, index, options = {}) {
+            return new Promise((resolve) => {
+                const { mobileView = false, entry, exit } = options
+                const animOptions = {
+                    duration: 150,
+                    easing: 'ease',
+                    fill: 'forwards'
+                }
+                const parent = typeof id === 'string' ? document.getElementById(id) : id;
+                const visibleElement = [...parent.children].find(elem => !elem.classList.contains(mobileView ? 'hide-on-mobile' : 'hidden'));
+                if (visibleElement === parent.children[index]) return;
+                visibleElement.getAnimations().forEach(anim => anim.cancel())
+                parent.children[index].getAnimations().forEach(anim => anim.cancel())
+                if (visibleElement) {
+                    if (exit) {
+                        visibleElement.animate(exit, animOptions).onfinish = () => {
+                            visibleElement.classList.add(mobileView ? 'hide-on-mobile' : 'hidden')
+                            parent.children[index].classList.remove(mobileView ? 'hide-on-mobile' : 'hidden')
+                            if (entry)
+                                parent.children[index].animate(entry, animOptions).onfinish = () => resolve()
+                        }
+                    } else {
+                        visibleElement.classList.add(mobileView ? 'hide-on-mobile' : 'hidden')
+                        parent.children[index].classList.remove(mobileView ? 'hide-on-mobile' : 'hidden')
+                        resolve()
+                    }
+                } else {
+                    parent.children[index].classList.remove(mobileView ? 'hide-on-mobile' : 'hidden')
+                    parent.children[index].animate(entry, animOptions).onfinish = () => resolve()
+                }
+            })
+        }
     </script>
     <script>
         router.addRoute('', state => {
             console.log(state)
         })
+        const render = {
+            approvedKycAddressCard(address) {
+                const floID = floCrypto.toFloID(address)
+                const btcID = btcOperator.convert.legacy2bech(floID)
+                return html`
+                    <li class="revoke-card" data-address=${btcID} data-search-key=${`${btcID}-${floID}`}>
+                        <label class="flex align-center">
+                            <input type="checkbox" value=${btcID}/>
+                            <div class="grid gap-0-3">
+                                <span>BTC: ${btcID}</span>
+                                <span>FLO: ${floID}</span>
+                            </div>
+                        </label>
+                    </li>
+                `
+            },
+            approvedKycs() {
+                const approvedKycs = Object.keys(floGlobals.approvedKyc)
+                    .filter(address => !floGlobals.approvedKyc[address].revokedBy)
+                    .map(address => render.approvedKycAddressCard(address))
+                renderElem(getRef('approved_kyc_addresses'), html`${approvedKycs}`)
+            }
+        }
+        const addressesToRevoke = new Set()
         getRef('kyc_type').addEventListener('change', e => {
             if (e.target.value === 'approve') {
-                getRef('address_manage_title').textContent = 'KYCs to be approved'
-                getRef('submit_kyc').textContent = 'Approve'
+                showChildElement('kyc_mode_wrapper', 0)
             } else {
-                getRef('address_manage_title').textContent = 'KYCs to be revoked'
-                getRef('submit_kyc').textContent = 'Revoke'
+                showChildElement('kyc_mode_wrapper', 1)
+                render.approvedKycs()
             }
         })
+        getRef('search_approved').addEventListener('input', e => {
+            const searchKey = e.target.value.toLowerCase()
+            getRef('approved_kyc_addresses').querySelectorAll('li').forEach(li => {
+                if (li.dataset.searchKey.toLowerCase().includes(searchKey)) {
+                    li.classList.remove('hidden')
+                } else {
+                    li.classList.add('hidden')
+                }
+            })
+        })
+        getRef('approved_kyc_addresses').addEventListener('change', e => {
+            if (e.target.checked) {
+                const addresses = processAddresses([...addressesToRevoke])
+                const floData = `KYC|REVOKE_KYC|${addresses.join(',')}`
+                if (floData.length > 1040) {
+                    return notify('Maximum limit reached for this batch. Revoke selected and continue the process.', 'error')
+                }
+                addressesToRevoke.add(e.target.value)
+            } else {
+                addressesToRevoke.delete(e.target.value)
+            }
+            if (addressesToRevoke.size) {
+                getRef('selected_addresses').textContent = `${addressesToRevoke.size} selected`
+                getRef('revoke_kyc_button').parentElement.classList.remove('hidden')
+            } else {
+                getRef('selected_addresses').textContent = ``
+                getRef('revoke_kyc_button').parentElement.classList.add('hidden')
+            }
+        })
+        function clearSelection() {
+            addressesToRevoke.clear()
+            getRef('selected_addresses').textContent = ``
+            getRef('revoke_kyc_button').parentElement.classList.add('hidden')
+            getRef('approved_kyc_addresses').querySelectorAll('input').forEach(input => input.checked = false)
+        }
         getRef('aggregator_private_key').addEventListener('input', e => {
             checkBalance(floCrypto.getAddress(e.target.value.trim()))
         })
@@ -231,56 +366,98 @@
         addressInputObserver.observe(getRef('kyc_addresses_container'), {
             childList: true
         })
-        function processAddresses() {
-            const addressInputs = document.querySelectorAll('.kyc-address')
-            const addresses = new Set()
-            addressInputs.forEach(input => {
-                const address = input.value.trim()
-                if (address !== '') {
-                    let equivalentBtcAddress = address
-                    if (floCrypto.validateFloID(address))
-                        equivalentBtcAddress = btcOperator.convert.legacy2bech(address)
-                    addresses.add(equivalentBtcAddress)
-                }
+        function processAddresses(addresses = []) {
+            const uniqueAddresses = new Set()
+            addresses.forEach(address => {
+                let equivalentBtcAddress = address
+                if (floCrypto.validateFloID(address))
+                    equivalentBtcAddress = btcOperator.convert.legacy2bech(address)
+                uniqueAddresses.add(equivalentBtcAddress)
             })
-            return [...addresses]
+            return [...uniqueAddresses]
         }
-        function submitAddresses() {
+        function approveAddresses() {
             const aggregatorPrivateKey = getRef('aggregator_private_key').value.trim()
+            if (!aggregatorPrivateKey) {
+                return notify('Enter aggregator private key', 'error')
+            }
             const aggregatorAddress = floCrypto.getAddress(aggregatorPrivateKey)
             if (!floGlobals.approvedKycAggregators.hasOwnProperty(aggregatorAddress)) {
-                notify('KYC aggregator address is not approved', 'error')
-                return
+                return notify('KYC aggregator address is not approved', 'error')
             }
-            const addresses = processAddresses()
+            const addressInputs = [...document.querySelectorAll('.kyc-address')]
+                .filter(input => input.value.trim() !== '')
+            const addresses = processAddresses(addressInputs)
             if (addresses.length === 0) {
-                notify('No addresses to process', 'error')
-                return
+                return notify('Enter at least one address to approve', 'error')
             }
-            const kycType = getRef('kyc_type').value
-            const floData = `KYC|${kycType === 'approve' ? 'APPROVE_KYC' : 'REVOKE_KYC'}|${addresses.join(',')}`
+            const floData = `KYC|APPROVE_KYC|${addresses.join(',')}`
             if (floData.length > 1040) {
-                notify('Too many addresses. Try removing one and resubmitting.', 'error')
-                return
+                return notify('Too many addresses. Try removing one and resubmitting.', 'error')
             }
-            buttonLoader(getRef('submit_kyc'), true)
-            floBlockchainAPI.writeData(aggregatorAddress, floData, aggregatorPrivateKey, aggregatorAddress).then(txId => {
-                notify(`${kycType === 'approve' ? 'Approval' : 'Revoke'} request submitted. TXID: ${txId}`, 'success')
-                getRef('kyc_addresses_container').innerHTML = '';
-                getRef('kyc_form').reset()
-                addAddressInput()
-            }).catch(e => {
-                notify(e, 'error')
-            }).finally(() => {
-                buttonLoader(getRef('submit_kyc'), false)
-                setTimeout(() => {
-                    checkBalance()
-                }, 1000)
+            getConfirmation('Approve entered addresses?', {
+                confirmText: 'Approve',
+            }).then((res) => {
+                if (!res) return
+                buttonLoader(getRef('submit_kyc'), true)
+                floBlockchainAPI.writeData(aggregatorAddress, floData, aggregatorPrivateKey, aggregatorAddress).then(txId => {
+                    notify(`Approval request submitted. TXID: ${txId}`, 'success')
+                    getRef('kyc_addresses_container').innerHTML = '';
+                    getRef('aggregator_private_key').value = ''
+                    addAddressInput()
+                }).catch(e => {
+                    notify(e, 'error')
+                }).finally(() => {
+                    buttonLoader(getRef('submit_kyc'), false)
+                    setTimeout(() => {
+                        checkBalance()
+                    }, 1000)
+                })
+            })
+        }
+        function revokeAddresses() {
+            const aggregatorPrivateKey = getRef('aggregator_private_key').value.trim()
+            if (aggregatorPrivateKey === '') {
+                return notify('Please enter KYC aggregator private key', 'error')
+            }
+            const aggregatorAddress = floCrypto.getAddress(aggregatorPrivateKey)
+            if (!floGlobals.approvedKycAggregators.hasOwnProperty(aggregatorAddress)) {
+                return notify('KYC aggregator address is not approved', 'error')
+            }
+            const addresses = processAddresses([...addressesToRevoke])
+            if (addresses.length === 0) {
+                return notify('Select at least one address to revoke', 'error')
+            }
+            getConfirmation('Revoke selected addresses?', {
+                confirmText: 'Revoke',
+            }).then((res) => {
+                if (!res) return
+                const floData = `KYC|REVOKE_KYC|${addresses.join(',')}`
+                buttonLoader(getRef('revoke_kyc_button'), true)
+                floBlockchainAPI.writeData(aggregatorAddress, floData, aggregatorPrivateKey, aggregatorAddress).then(txId => {
+                    notify(`Revoke request submitted. TXID: ${txId}`, 'success')
+                    getRef('aggregator_private_key').value = ''
+                    addressesToRevoke.forEach(address => {
+                        if (!floGlobals.approvedKyc.hasOwnProperty(address)) return
+                        floGlobals.approvedKyc[address].revokedBy = aggregatorAddress
+                        floGlobals.approvedKyc[address].validTo = Date.now()
+                    })
+                    addressesToRevoke.clear()
+                    render.approvedKycs()
+                }).catch(e => {
+                    notify(e, 'error')
+                }).finally(() => {
+                    buttonLoader(getRef('revoke_kyc_button'), false)
+                    setTimeout(() => {
+                        checkBalance()
+                    }, 1000)
+                })
             })
         }
         window.onload = async () => {
             try {
                 await getApprovedAggregators()
+                await getApprovedKycs()
                 router.routeTo(window.location.hash)
                 getRef('aggregator_private_key').customValidation = floCrypto.getPubKeyHex
                 addAddressInput()

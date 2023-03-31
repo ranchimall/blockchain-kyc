@@ -367,6 +367,10 @@ sm-chip[selected] {
   --background: var(--accent-color);
 }
 
+sm-input {
+  --border-radius: 0.5rem;
+}
+
 .multi-state-button {
   display: grid;
   text-align: center;
@@ -379,6 +383,43 @@ sm-chip[selected] {
 .multi-state-button button {
   z-index: 1;
   width: 100%;
+}
+
+#confirmation_popup,
+#prompt_popup {
+  flex-direction: column;
+}
+#confirmation_popup h4,
+#prompt_popup h4 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+#confirmation_popup .flex,
+#prompt_popup .flex {
+  margin-top: 1rem;
+}
+
+.popup__header {
+  position: relative;
+  display: grid;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0 1.5rem;
+  align-items: center;
+}
+.popup__header > * {
+  grid-row: 1;
+}
+.popup__header h3,
+.popup__header h4 {
+  grid-column: 1/-1;
+  justify-self: center;
+  align-self: center;
+}
+.popup__header__close {
+  grid-column: 1;
+  margin-left: -1rem;
+  justify-self: flex-start;
 }
 
 #loading {
@@ -414,6 +455,10 @@ header {
 .address-input sm-input {
   width: 100%;
 }
+.address-input button {
+  margin-bottom: auto;
+  height: 3.2rem;
+}
 
 #verification_result {
   display: grid;
@@ -444,6 +489,31 @@ header {
   min-width: 5rem;
 }
 
+.revoke-card {
+  list-style: none;
+}
+.revoke-card label {
+  gap: 1rem;
+  padding: 0.8rem 0;
+  font-weight: 500;
+  cursor: pointer;
+}
+.revoke-card input {
+  accent-color: var(--accent-color);
+  height: 1.3em;
+  width: 1.3em;
+}
+.revoke-card span:last-of-type {
+  font-size: 0.9rem;
+  color: rgba(var(--text-color), 0.8);
+  font-weight: 400;
+}
+
+@media screen and (min-width: 40rem) {
+  sm-popup {
+    --width: 24rem;
+  }
+}
 .error {
   color: var(--danger-color);
 }

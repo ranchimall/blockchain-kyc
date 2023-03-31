@@ -116,45 +116,6 @@
         router.addRoute('verify', async state => {
             verify(state.params.address)
         })
-        floGlobals.approvedKyc = {};
-        function getApprovedKycs() {
-            return new Promise((resolve, reject) => {
-                const aggregatorTxs = Object.keys(floGlobals.approvedKycAggregators).map(aggregator => {
-                    return floBlockchainAPI.readAllTxs(aggregator);
-                });
-                Promise.all(aggregatorTxs).then(aggregatorData => {
-                    aggregatorData = aggregatorData.flat(1)
-                        .filter(tx => tx.vin[0].addr in floGlobals.approvedKycAggregators && tx.floData.startsWith('KYC'))
-                        .sort((a, b) => a.time - b.time);
-                    for (const tx of aggregatorData) {
-                        const { floData, time, vin, vout } = tx;
-                        const [service, operationType, operationData, validity] = floData.split('|');
-                        switch (operationType) {
-                            case 'APPROVE_KYC':
-                                operationData.split(',').forEach(address => {
-                                    floGlobals.approvedKyc[address] = {
-                                        validFrom: time * 1000,
-                                        validTo: validity || Date.now() + 10000000,
-                                        verifiedBy: vin[0].addr
-                                    };
-                                });
-                                break;
-                            case 'REVOKE_KYC':
-                                operationData.split(',').forEach(address => {
-                                    floGlobals.approvedKyc[address].validTo = time * 1000;
-                                    floGlobals.approvedKyc[address].revokedBy = vin[0].addr;
-                                });
-                                break;
-                            default:
-                                return;
-                        }
-                    }
-                    resolve();
-                }).catch(e => {
-                    reject(e);
-                })
-            })
-        }
         function verify(address) {
             if (address) {
                 if (getRef('address_verify').value.trim() !== address)
