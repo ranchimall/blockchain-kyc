@@ -125,6 +125,9 @@
                         </div>
                     </div>
                     <ul id="approved_kyc_addresses" class="grid gap-0-3"></ul>
+                    <p id="no_results" class="hidden">
+                        No addresses found.
+                    </p>
                 </div>
             </div>
         </section>
@@ -276,6 +279,12 @@
                     li.classList.add('hidden')
                 }
             })
+            // show message if no results
+            if (getRef('approved_kyc_addresses').querySelectorAll('li:not(.hidden)').length === 0) {
+                getRef('no_results').classList.remove('hidden')
+            } else {
+                getRef('no_results').classList.add('hidden')
+            }
         })
         getRef('approved_kyc_addresses').addEventListener('change', e => {
             if (e.target.checked) {
