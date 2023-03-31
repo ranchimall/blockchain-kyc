@@ -348,6 +348,12 @@ details .down-arrow {
   margin-inline: 1.5rem;
 }
 
+.wrap-around {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
 sm-chips {
   --gap: 0.3rem;
 }
