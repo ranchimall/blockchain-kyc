@@ -64,15 +64,38 @@ const getConfirmation = (title, options = {}) => {
         })
     })
 }
-// Use when a function needs to be executed after user finishes changes
-const debounce = (callback, wait) => {
-    let timeoutId = null;
-    return (...args) => {
-        window.clearTimeout(timeoutId);
-        timeoutId = window.setTimeout(() => {
-            callback.apply(null, args);
-        }, wait);
-    };
+function getFormattedTime(timestamp, format) {
+    try {
+        if (String(timestamp).length < 13)
+            timestamp *= 1000
+        let [day, month, date, year] = new Date(timestamp).toString().split(' '),
+            minutes = new Date(timestamp).getMinutes(),
+            hours = new Date(timestamp).getHours(),
+            currentTime = new Date().toString().split(' ')
+
+        minutes = minutes < 10 ? `0${minutes}` : minutes
+        let finalHours = ``;
+        if (hours > 12)
+            finalHours = `${hours - 12}:${minutes}`
+        else if (hours === 0)
+            finalHours = `12:${minutes}`
+        else
+            finalHours = `${hours}:${minutes}`
+
+        finalHours = hours >= 12 ? `${finalHours} PM` : `${finalHours} AM`
+        switch (format) {
+            case 'date-only':
+                return `${month} ${date}, ${year}`;
+                break;
+            case 'time-only':
+                return finalHours;
+            default:
+                return `${month} ${date}, ${year} at ${finalHours}`;
+        }
+    } catch (e) {
+        console.error(e);
+        return timestamp;
+    }
 }
 
 class Router {
@@ -158,7 +181,7 @@ function getApprovedAggregators() {
                             break;
                         case 'REVOKE_AGGREGATOR':
                             operationData.split(',').forEach(aggregator => {
-                                floGlobals.approvedKycAggregators[floCrypto.toFloID(aggregator)].validTo = time * 1000;
+                                delete floGlobals.approvedKycAggregators[floCrypto.toFloID(aggregator)]
                             });
                             break;
                         default:
@@ -198,6 +221,7 @@ function getApprovedKycs() {
                         break;
                     case 'REVOKE_KYC':
                         operationData.split(',').forEach(address => {
+                            if (!floGlobals.approvedKyc[address]) return
                             floGlobals.approvedKyc[address].validTo = time * 1000;
                             floGlobals.approvedKyc[address].revokedBy = vin[0].addr;
                         });

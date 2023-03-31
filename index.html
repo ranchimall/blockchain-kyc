@@ -75,39 +75,6 @@
     <script src="scripts/chainkyc.js"></script>
     <script>
         const { html, render: renderElem } = uhtml;
-        function getFormattedTime(timestamp, format) {
-            try {
-                if (String(timestamp).length < 13)
-                    timestamp *= 1000
-                let [day, month, date, year] = new Date(timestamp).toString().split(' '),
-                    minutes = new Date(timestamp).getMinutes(),
-                    hours = new Date(timestamp).getHours(),
-                    currentTime = new Date().toString().split(' ')
-
-                minutes = minutes < 10 ? `0${minutes}` : minutes
-                let finalHours = ``;
-                if (hours > 12)
-                    finalHours = `${hours - 12}:${minutes}`
-                else if (hours === 0)
-                    finalHours = `12:${minutes}`
-                else
-                    finalHours = `${hours}:${minutes}`
-
-                finalHours = hours >= 12 ? `${finalHours} PM` : `${finalHours} AM`
-                switch (format) {
-                    case 'date-only':
-                        return `${month} ${date}, ${year}`;
-                        break;
-                    case 'time-only':
-                        return finalHours;
-                    default:
-                        return `${month} ${date}, ${year} at ${finalHours}`;
-                }
-            } catch (e) {
-                console.error(e);
-                return timestamp;
-            }
-        }
     </script>
     <script>
         router.addRoute('', async state => {

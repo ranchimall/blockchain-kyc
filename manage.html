@@ -321,7 +321,7 @@
             if (getRef('aggregator_private_key').isValid) {
                 floBlockchainAPI.getBalance(address).then(balance => {
                     if (balance < 0.01) {
-                        renderElem(getRef('aggregator_balance'), html`Balance: ${balance}FLO. You don't have enough FLO.`);
+                        renderElem(getRef('aggregator_balance'), html`Balance: ${balance} FLO. You don't have enough FLO.`);
                         getRef('aggregator_balance').classList.add('error')
                     } else {
                         renderElem(getRef('aggregator_balance'), html`Balance: ${balance} FLO`);
@@ -454,6 +454,7 @@
                     })
                     addressesToRevoke.clear()
                     render.approvedKycs()
+                    clearSelection()
                 }).catch(e => {
                     notify(e, 'error')
                 }).finally(() => {
