@@ -451,10 +451,8 @@
             const uniqueAddresses = new Set()
             addresses.forEach(address => {
                 let equivalentBtcAddress = address
-                if (getRef('manage_type').value === 'aggregator' && floCrypto.validateFloID(address))
+                if (floCrypto.validateFloID(address))
                     equivalentBtcAddress = btcOperator.convert.legacy2bech(address)
-                else
-                    equivalentBtcAddress = floCrypto.toFloID(address)
                 uniqueAddresses.add(equivalentBtcAddress)
             })
             return [...uniqueAddresses]
