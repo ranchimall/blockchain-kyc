@@ -219,7 +219,6 @@ function getApprovedKycs() {
                         });
                         break;
                     case 'REVOKE_KYC':
-                        console.log(operationData)
                         operationData.split(',').forEach(address => {
                             if (!floGlobals.approvedKyc[address]) return
                             floGlobals.approvedKyc[address].validTo = time * 1000;
