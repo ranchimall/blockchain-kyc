@@ -48,7 +48,7 @@ strong {
 
 a {
   text-decoration: none;
-  color: var(--accent-color);
+  color: inherit;
 
   &:focus-visible {
     box-shadow: 0 0 0 0.1rem rgba(var(--text-color), 1) inset;

@@ -173,15 +173,14 @@ function getApprovedAggregators() {
                     switch (operationType) {
                         case 'APPROVE_AGGREGATOR':
                             operationData.split(',').forEach(aggregator => {
-                                floGlobals.approvedKycAggregators[floCrypto.toFloID(aggregator)] = {
-                                    validFrom: time * 1000,
-                                    validTo: validity || Date.now() + 10000000
-                                };
+                                const [address, label = ''] = aggregator.split(':');
+                                floGlobals.approvedKycAggregators[floCrypto.toFloID(address)] = label;
                             });
                             break;
                         case 'REVOKE_AGGREGATOR':
                             operationData.split(',').forEach(aggregator => {
-                                delete floGlobals.approvedKycAggregators[floCrypto.toFloID(aggregator)]
+                                const [address, label = ''] = aggregator.split(':');
+                                delete floGlobals.approvedKycAggregators[floCrypto.toFloID(address)]
                             });
                             break;
                         default:
@@ -215,7 +214,7 @@ function getApprovedKycs() {
                             floGlobals.approvedKyc[address] = {
                                 validFrom: time * 1000,
                                 validTo: validity || Date.now() + 10000000,
-                                verifiedBy: vin[0].addr
+                                issuedBy: vin[0].addr
                             };
                         });
                         break;
