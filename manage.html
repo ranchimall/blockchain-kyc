@@ -488,12 +488,12 @@
             }
             let floData
             if (manageType === 'aggregator')
-                floData = `KYC|APPROVE_KYC|${addresses.join(',')}`
+                floData = `KYC|APPROVE_KYC|${addresses.join('+')}`
             else {
                 const addressWithLabels = addresses.map((address, index) => {
                     return `${address}:${addressLabels[index]}`
                 })
-                floData = `KYC|APPROVE_AGGREGATOR|${addressWithLabels.join(',')}`
+                floData = `KYC|APPROVE_AGGREGATOR|${addressWithLabels.join('+')}`
             }
             console.log(floData)
             if (floData.length > 1040) {
@@ -541,9 +541,9 @@
             }
             let floData
             if (manageType === 'aggregator')
-                floData = `KYC|REVOKE_KYC|${addresses.join(',')}`
+                floData = `KYC|REVOKE_KYC|${addresses.join('+')}`
             else
-                floData = `KYC|REVOKE_AGGREGATOR|${addresses.join(',')}`
+                floData = `KYC|REVOKE_AGGREGATOR|${addresses.join('+')}`
             console.log(floData)
             getConfirmation('Revoke selected addresses?', {
                 confirmText: 'Revoke',

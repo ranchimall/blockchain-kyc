@@ -172,13 +172,13 @@ function getApprovedAggregators() {
                     const [service, operationType, operationData, validity] = floData.split('|');
                     switch (operationType) {
                         case 'APPROVE_AGGREGATOR':
-                            operationData.split(',').forEach(aggregator => {
+                            operationData.split('+').forEach(aggregator => {
                                 const [address, label = ''] = aggregator.split(':');
                                 floGlobals.approvedKycAggregators[floCrypto.toFloID(address)] = label;
                             });
                             break;
                         case 'REVOKE_AGGREGATOR':
-                            operationData.split(',').forEach(aggregator => {
+                            operationData.split('+').forEach(aggregator => {
                                 const [address, label = ''] = aggregator.split(':');
                                 delete floGlobals.approvedKycAggregators[floCrypto.toFloID(address)]
                             });
@@ -210,7 +210,7 @@ function getApprovedKycs() {
                 const [service, operationType, operationData, validity] = floData.split('|');
                 switch (operationType) {
                     case 'APPROVE_KYC':
-                        operationData.split(',').forEach(address => {
+                        operationData.split('+').forEach(address => {
                             floGlobals.approvedKyc[address] = {
                                 validFrom: time * 1000,
                                 validTo: validity || Date.now() + 10000000,
@@ -219,7 +219,7 @@ function getApprovedKycs() {
                         });
                         break;
                     case 'REVOKE_KYC':
-                        operationData.split(',').forEach(address => {
+                        operationData.split('+').forEach(address => {
                             if (!floGlobals.approvedKyc[address]) return
                             floGlobals.approvedKyc[address].validTo = time * 1000;
                             floGlobals.approvedKyc[address].revokedBy = vin[0].addr;
